@@ -1,0 +1,5 @@
+[
+  { "codigo": "PISTA2026", "intentosDisponibles": 1 },
+  { "codigo": "AYUDA", "intentosDisponibles": 2 },
+  { "codigo": "AGOTADO", "intentosDisponibles": 0 }
+]
