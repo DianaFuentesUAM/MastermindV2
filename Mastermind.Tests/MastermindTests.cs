@@ -1,4 +1,5 @@
 
+
 using Mastermind.Core;
 using Xunit;
 
@@ -267,6 +268,35 @@ public sealed class MastermindTests
         Assert.Throws<ArgumentException>(() =>
             evaluador.EvaluarIntento("RGBY", "rgby"));
     }
+
+    // PRUEBA 21: Archivo JSON inválido
+    [Fact]
+    public void ArchivoJsonInvalidoDebeSerRechazado()
+    {
+        string ruta = Path.Combine(
+            Path.GetTempPath(),
+            $"cheats_invalidos_{Guid.NewGuid():N}.json"
+        );
+
+        try
+        {
+            // Creamos un archivo con contenido JSON mal formado.
+            File.WriteAllText(
+                ruta,
+                "[{ \"Codigo\": \"PISTA\", \"IntentosDisponibles\": }]"
+            );
+
+            // El programa debe rechazar el archivo inválido.
+            Assert.Throws<System.Text.Json.JsonException>(() =>
+                MastermindEvaluator.CargarCheats(ruta));
+        }
+        finally
+        {
+            // Eliminamos el archivo temporal después de la prueba.
+            if (File.Exists(ruta))
+            {
+                File.Delete(ruta);
+            }
+        }
+    }
 }
-
-
