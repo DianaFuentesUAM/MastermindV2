@@ -23,46 +23,58 @@ public sealed class MastermindTests
             log ?? (_ => { })
         );
 
+    // PRUEBA 1: Coincidencia completa
     [Fact]
     public void Completo()
     {
         var r = Crear().EvaluarIntento("RGBY", "RGBY");
+
         Assert.Equal(4, r.BienPosicionados);
         Assert.Equal(0, r.ColorCorrecto);
     }
 
+    // PRUEBA 2: Coincidencia parcial
     [Fact]
     public void Parcial_EjemploDelProfesor()
     {
         var r = Crear().EvaluarIntento("RGBY", "RBYG");
+
         Assert.Equal(1, r.BienPosicionados);
         Assert.Equal(3, r.ColorCorrecto);
     }
 
+    // PRUEBA 3: Ninguna coincidencia
     [Fact]
     public void SinCoincidencias()
     {
         var r = Crear().EvaluarIntento("RGBY", "CCCC");
+
         Assert.Equal(0, r.BienPosicionados);
         Assert.Equal(0, r.ColorCorrecto);
     }
 
+    // PRUEBA 4: Manejo de duplicados
     [Fact]
     public void Duplicados_NoSeCuentanDosVeces()
     {
         var r = Crear().EvaluarIntento("RRBG", "BRRR");
+
         Assert.Equal(1, r.BienPosicionados);
         Assert.Equal(2, r.ColorCorrecto);
     }
 
+    // PRUEBA 5: Tamaño de seis posiciones
     [Fact]
     public void TamanoSeis()
     {
-        var r = Crear(6).EvaluarIntento("RGBYCP", "RGBYPC");
+        var r = Crear(6).EvaluarIntento(
+            "RGBYCP", "RGBYPC");
+
         Assert.Equal(4, r.BienPosicionados);
         Assert.Equal(2, r.ColorCorrecto);
     }
 
+    // PRUEBA 6: Patrón con tamaño incorrecto
     [Fact]
     public void PatronConTamanoIncorrecto()
     {
@@ -70,6 +82,7 @@ public sealed class MastermindTests
             Crear().EvaluarIntento("RGB", "RGBY"));
     }
 
+    // PRUEBA 7: Color no permitido
     [Fact]
     public void IntentoConColorInvalido()
     {
@@ -77,12 +90,14 @@ public sealed class MastermindTests
             Crear().EvaluarIntento("RGBY", "RGBZ"));
     }
 
+    // PRUEBA 8: Tamaño de configuración inválido
     [Fact]
     public void ConfiguracionTamanoInvalido()
     {
         Assert.Throws<ArgumentException>(() => Crear(5));
     }
 
+    // PRUEBA 9: Colores repetidos en configuración
     [Fact]
     public void ConfiguracionColoresRepetidos()
     {
@@ -90,6 +105,7 @@ public sealed class MastermindTests
             Crear(colores: "RRBG"));
     }
 
+    // PRUEBA 10: Patrón nulo
     [Fact]
     public void NullNoValido()
     {
@@ -97,15 +113,17 @@ public sealed class MastermindTests
             Crear().EvaluarIntento(null!, "RGBY"));
     }
 
+    // PRUEBA 11: Retrocompatibilidad
     [Fact]
     public void RetrocompatibleDosArgumentos()
     {
-        Assert.Equal(
-            4,
-            Crear().EvaluarIntento("RGBY", "RGBY").BienPosicionados
-        );
+        var resultado = Crear().EvaluarIntento(
+            "RGBY", "RGBY");
+
+        Assert.Equal(4, resultado.BienPosicionados);
     }
 
+    // PRUEBA 12: Cheat code válido
     [Fact]
     public void CheatValidoConsumeIntento()
     {
@@ -125,6 +143,7 @@ public sealed class MastermindTests
         Assert.NotNull(r.ColorRevelado);
     }
 
+    // PRUEBA 13: Cheat repetido
     [Fact]
     public void CheatRepetidoEnPartidaFalla()
     {
@@ -143,6 +162,7 @@ public sealed class MastermindTests
             j.EvaluarIntento("RGBY", "CCCC", "PISTA"));
     }
 
+    // PRUEBA 14: Segundo cheat diferente
     [Fact]
     public void SegundoCheatDistintoTambienFalla()
     {
@@ -166,6 +186,7 @@ public sealed class MastermindTests
             j.EvaluarIntento("RGBY", "CCCC", "B"));
     }
 
+    // PRUEBA 15: Cheat inútil
     [Fact]
     public void CheatInutilIgualmenteSeConsume()
     {
@@ -184,17 +205,16 @@ public sealed class MastermindTests
         Assert.Null(r.ColorRevelado);
     }
 
+    // PRUEBA 16: Cheat desconocido
     [Fact]
     public void CheatDesconocido()
     {
         Assert.Throws<ArgumentException>(() =>
             Crear().EvaluarIntento(
-                "RGBY",
-                "CCCC",
-                "INVENTADO"
-            ));
+                "RGBY", "CCCC", "INVENTADO"));
     }
 
+    // PRUEBA 17: Cheat agotado
     [Fact]
     public void CheatAgotado()
     {
@@ -209,6 +229,7 @@ public sealed class MastermindTests
             }).EvaluarIntento("RGBY", "CCCC", "A"));
     }
 
+    // PRUEBA 18: Registro con fecha y hora
     [Fact]
     public void RegistroIncluyeResultadoYPatrones()
     {
@@ -224,11 +245,10 @@ public sealed class MastermindTests
 
         Assert.Matches(
             @"\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}",
-            registro
-        );
+            registro);
     }
 
-    // PRUEBA UNITARIA NUEVA
+    // PRUEBA 19: Cheat code vacío
     [Fact]
     public void CheatVacioDebeSerRechazado()
     {
@@ -237,5 +257,16 @@ public sealed class MastermindTests
         Assert.Throws<ArgumentException>(() =>
             evaluador.EvaluarIntento("RGBY", "RBYG", ""));
     }
+
+    // PRUEBA 20: Letras minúsculas
+    [Fact]
+    public void IntentoEnMinusculasDebeSerRechazado()
+    {
+        var evaluador = Crear();
+
+        Assert.Throws<ArgumentException>(() =>
+            evaluador.EvaluarIntento("RGBY", "rgby"));
+    }
 }
+
 
